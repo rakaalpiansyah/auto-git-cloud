@@ -1,0 +1,26 @@
+name: 10x Daily Auto Green
+
+on:
+  schedule:
+    # Berjalan setiap 2 jam (Jam 0, 2, 4, 6, 8, 10, 12, 14, 16, 18 UTC)
+    # Total 10 kali dalam 24 jam
+    - cron: '0 0,2,4,6,8,10,12,14,16,18 * * *'
+  workflow_dispatch: # Agar bisa dijalankan manual juga
+
+permissions:
+  contents: write
+
+jobs:
+  auto_commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run Script
+        run: python auto_git_cloud.py
+
+      - name: Commit & Push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: daily system sync"
+          file_pattern: activity_log.md
